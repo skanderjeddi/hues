@@ -64,7 +64,7 @@ fc_set_lvl_fmt("...");
 ```
 
 3. **Changing the output destination:**
-**COMING SOON!**`
+**COMING SOON!**
 
 ## Contributing
 We appreciate any contribution to FlexCLog. Please review the [CONTRIBUTING.md](CONTRIBUTING.md) for more details on how to contribute to this project.
@@ -74,4 +74,4 @@ FlexCLog is licensed under the terms of the MIT License. See [LICENSE](LICENSE) 
 
 ---
 
-**Happy coding!**
+**Thank you for using FlexCLog!**
