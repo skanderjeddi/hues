@@ -1,7 +1,42 @@
+/**
+ * @file flexclog.h
+ * @brief Flexclog library for flexible and colorful logging
+ */
+
 #include "flexclog.h"
 
+/**
+ * @fn static void fc_log_msg_v(fc_msg_t* msg, va_list args)
+ * @brief Logs a formatted message.
+ * @param msg A pointer to the message to log.
+ * @param args A list of arguments to use in the format string.
+ */
 static void fc_log_msg_v(fc_msg_t* msg, va_list args);
+
+/**
+ * @fn static size_t fc_fmt_pvc(char* buff, size_t buffsz, char pref, fc_fmt_t** fmts, const char* fmt, va_list args)
+ * @brief Formats a log message with a pointer argument using a va_list.
+ * @param buff A buffer to store the formatted log message.
+ * @param buffsz The size of the buffer.
+ * @param pref The prefix character for the format string.
+ * @param fmts A pointer to the array of log message formats.
+ * @param fmt The format string for the log message.
+ * @param args A list of arguments to use in the format string.
+ * @return The number of characters in the formatted log message.
+ */
 static size_t fc_fmt_pvc(char* buff, size_t buffsz, char pref, fc_fmt_t** fmts, const char* fmt, va_list args);
+
+/**
+ * @fn static size_t fc_fmt_vc(char* buff, size_t buffsz, char pref, fc_fmt_t** fmts, const char* fmt, va_list args)
+ * @brief Formats a log message using a va_list.
+ * @param buff A buffer to store the formatted log message.
+ * @param buffsz The size of the buffer.
+ * @param pref The prefix character for the format string.
+ * @param fmts A pointer to the array of log message formats.
+ * @param fmt The format string for the log message.
+ * @param args A list of arguments to use in the format string.
+ * @return The number of characters in the formatted log message.
+ */
 static size_t fc_fmt_vc(char* buff, size_t buffsz, char pref, fc_fmt_t** fmts, const char* fmt, va_list args);
 
 static fc_conf_t fc_glob_conf = { 
@@ -91,10 +126,29 @@ void fc_thm_from_hex(uint32_t* bg_hex, uint32_t* fg_hex) {
     }
 }
 
+/**
+ * @fn static size_t fc_fmt_v(char* buff, size_t buffsz, char pref, fc_fmt_t** fmts, const char* fmt, va_list args)
+ * @brief Formats a log message using a va_list.
+ * @param buff A buffer to store the formatted log message.
+ * @param buffsz The size of the buffer.
+ * @param pref The prefix character for the format string.
+ * @param fmts A pointer to the array of log message formats.
+ * @param fmt The format string for the log message.
+ * @param args A list of arguments to use in the format string.
+ * @return The number of characters in the formatted log message.
+ */
 static size_t fc_fmt_v(char* buff, size_t buffsz, char pref, fc_fmt_t** fmts, const char* fmt, va_list args) {
     return fc_fmt_vc(buff, buffsz, pref, fmts, fmt, args);
 }
 
+/**
+ * @fn size_t fc_fmt(char* buff, size_t buffsz, const char* fmt, ...)
+ * @brief Formats a log message with a variable number of arguments.
+ * @param buff A buffer to store the formatted log message.
+ * @param buffsz The size of the buffer.
+ * @param fmt The format string for the log message.
+ * @return The number of characters in the formatted log message.
+ */
 size_t fc_fmt(char* buff, size_t buffsz, const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
@@ -103,6 +157,17 @@ size_t fc_fmt(char* buff, size_t buffsz, const char* fmt, ...) {
     return written;
 }
 
+/**
+ * @fn static size_t fc_fmt_vc(char* buff, size_t buffsz, char pref, fc_fmt_t** fmts, const char* fmt, va_list args)
+ * @brief Formats a log message with a pointer argument using a va_list.
+ * @param buff A buffer to store the formatted log message.
+ * @param buffsz The size of the buffer.
+ * @param pref The prefix character for the format string.
+ * @param fmts A pointer to the array of log message formats.
+ * @param fmt The format string for the log message.
+ * @param args A list of arguments to use in the format string.
+ * @return The number of characters in the formatted log message.
+ */
 static size_t fc_fmt_vc(char* buff, size_t buffsz, char pref, fc_fmt_t** fmts, const char* fmt, va_list args) {
     char* buffptr = buff;
     char* buffend = buff + buffsz;
@@ -148,10 +213,29 @@ static size_t fc_fmt_vc(char* buff, size_t buffsz, char pref, fc_fmt_t** fmts, c
     return buffptr - buff;
 }
 
+/**
+ * @fn static size_t fc_fmt_pv(char* buff, size_t buffsz, char pref, fc_fmt_t** fmts, const char* fmt, va_list args)
+ * @brief Formats a log message with a pointer argument using a va_list.
+ * @param buff A buffer to store the formatted log message.
+ * @param buffsz The size of the buffer.
+ * @param pref The prefix character for the format string.
+ * @param fmts A pointer to the array of log message formats.
+ * @param fmt The format string for the log message.
+ * @param args A list of arguments to use in the format string.
+ * @return The number of characters in the formatted log message.
+ */
 static size_t fc_fmt_pv(char* buff, size_t buffsz, char pref, fc_fmt_t** fmts, const char* fmt, va_list args) {
     return fc_fmt_pvc(buff, buffsz, pref, fmts, fmt, args);
 }
 
+/**
+ * @fn size_t fc_fmt_p(char* buff, size_t buffsz, const char* fmt, ...)
+ * @brief Formats a log message with a variable number of arguments.
+ * @param buff A buffer to store the formatted log message.
+ * @param buffsz The size of the buffer.
+ * @param fmt The format string for the log message.
+ * @return The number of characters in the formatted log message.
+ */
 size_t fc_fmt_p(char* buff, size_t buffsz, const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
@@ -160,6 +244,17 @@ size_t fc_fmt_p(char* buff, size_t buffsz, const char* fmt, ...) {
     return written;
 }
 
+/**
+ * @fn static size_t fc_fmt_pvc(char* buff, size_t buffsz, char pref, fc_fmt_t** fmts, const char* fmt, va_list args)
+ * @brief Formats a log message with a pointer argument using a va_list.
+ * @param buff A buffer to store the formatted log message.
+ * @param buffsz The size of the buffer.
+ * @param pref The prefix character for the format string.
+ * @param fmts A pointer to the array of log message formats.
+ * @param fmt The format string for the log message.
+ * @param args A list of arguments to use in the format string.
+ * @return The number of characters in the formatted log message.
+ */
 static size_t fc_fmt_pvc(char* buff, size_t buffsz, char pref, fc_fmt_t** fmts, const char* fmt, va_list args) {
     char* buffptr = buff;
     char* buffend = buff + buffsz - 1; // Reserve space for null terminator
@@ -281,6 +376,11 @@ static size_t func_fmt_full_code_location(char* buff, size_t buffsz, char specif
     return snprintf(buff, buffsz, "%s @ %s:%ld", loc.func, loc.file, loc.line);
 }
 
+/**
+ * @fn void fc_log(fc_msg_t* msg, ...)
+ * @brief Logs a message.
+ * @param msg The message to log.
+ */
 void fc_log(fc_msg_t* msg, ...) {
     va_list args;
     va_start(args, msg);
@@ -288,6 +388,12 @@ void fc_log(fc_msg_t* msg, ...) {
     va_end(args);
 }
 
+/**
+ * @fn static void fc_log_msg_v(fc_msg_t* msg, va_list args)
+ * @brief Logs a message using a va_list.
+ * @param msg The message to log.
+ * @param args A list of arguments to use in the format string.
+ */
 static void fc_log_msg_v(fc_msg_t* msg, va_list args) {
     if (msg->lvl.lvl < fc_glob_conf.min_lvl) {
         return;
