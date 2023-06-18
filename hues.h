@@ -1,10 +1,10 @@
 /**
- * @file flexclog.h
+ * @file hues.h
  * @brief A flexible logging system with customizable log levels, color formatting and more.
  */
 
-#ifndef FLEXCLOG_H__
-#define FLEXCLOG_H__
+#ifndef HUES_H__
+#define HUES_H__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,240 +15,240 @@
 #include <time.h>
 
 /**
- * @struct fc_color_t
+ * @struct hues_color
  * @brief A structure representing an RGB color.
  */
 typedef struct {
     uint8_t r;  /**< Red component of the color. */
     uint8_t g;  /**< Green component of the color. */
     uint8_t b;  /**< Blue component of the color. */
-} fc_color_t;
+} hues_color;
 
 /**
- * @fn extern fc_color_t fc_hex_to_clr(uint32_t hex)
+ * @fn extern hues_color hues_hex_to_color(uint32_t hex)
  * @brief Converts a hexadecimal color value to an RGB color.
  * @param hex The hexadecimal color value to be converted.
  * @return The RGB color.
  */
-extern fc_color_t fc_hex_to_clr(uint32_t hex);
+extern hues_color hues_hex_to_color(uint32_t hex);
 
 /**
- * @fn extern void fc_clr_to_hex(char* hex, fc_color_t* color)
+ * @fn extern void hues_color_to_hex(char* hex, hues_color* color)
  * @brief Converts an RGB color to a hexadecimal color value.
  * @param hex The output hexadecimal color value.
  * @param color The RGB color to be converted.
  */
-extern void fc_clr_to_hex(char* hex, fc_color_t* color);
+extern void hues_color_to_hex(char* hex, hues_color* color);
 
 /**
- * @struct fc_code_loc_t
+ * @struct hues_code_location
  * @brief Represents a location in the code (file, function, and line).
  */
 typedef struct {
     const char* file;  /**< File name. */
-    const char* func;  /**< Function name. */
+    const char* method_name;  /**< Function name. */
     size_t line;  /**< Line number. */
-} fc_code_loc_t;
+} hues_code_location;
 
 /**
- * @enum fc_lvl_enum_t
+ * @enum hues_level_enum
  * @brief Enumerates logging levels.
  */
 typedef enum {
-    FC_LVL_TRC = 0,  /**< Trace level logging. */
-    FC_LVL_DBG = 1,  /**< Debug level logging. */
-    FC_LVL_INF = 2,  /**< Info level logging. */
-    FC_LVL_WRN = 3,  /**< Warning level logging. */
-    FC_LVL_SVR = 4,  /**< Severe level logging. */
-    FC_LVL_CRT = 5,  /**< Critical level logging. */
-    FC_LVL_UNK = 6,  /**< Unknown level logging. */
-} fc_lvl_enum_t;
+    HUES_LEVEL_TRACE = 0,  /**< Trace level logging. */
+    HUES_LEVEL_DEBUG = 1,  /**< Debug level logging. */
+    HUES_LEVEL_INFO = 2,  /**< Info level logging. */
+    HUES_LEVEL_WARN = 3,  /**< Warning level logging. */
+    HUES_LEVEL_SEVERE = 4,  /**< Severe level logging. */
+    HUES_LEVEL_CRITICAL = 5,  /**< Critical level logging. */
+    HUES_LEVEL_UNKNOWN = 6,  /**< Unknown level logging. */
+} hues_level_enum;
 
 /**
- * @struct fc_lvl_t
+ * @struct hues_level
  * @brief Represents a logging level and its string representation.
  */
 typedef struct {
-    fc_lvl_enum_t lvl;  /**< Log level. */
+    hues_level_enum level;  /**< Log level. */
     const char* name;  /**< Log level name. */
-} fc_lvl_t;
+} hues_level;
 
 /**
- * @struct fc_lvl_fmt_t
+ * @struct hues_level_format
  * @brief Represents a logging level, foreground and background colors for that level.
  */
 typedef struct {
-    fc_lvl_enum_t lvl;  /**< Log level. */
-    fc_color_t bg_clr;  /**< Background color for this level. */
-    fc_color_t fg_clr;  /**< Foreground color for this level. */
-} fc_lvl_fmt_t;
+    hues_level_enum level;  /**< Log level. */
+    hues_color background_color;  /**< Background color for this level. */
+    hues_color foreground_color;  /**< Foreground color for this level. */
+} hues_level_format;
 
 /**
- * @struct fc_thm_t
+ * @struct hues_theme
  * @brief Represents a theme for log levels.
  */
 typedef struct {
-    fc_lvl_fmt_t* fmt;  /**< Format for the level. */
-} fc_thm_t;
+    hues_level_format* format;  /**< Format for the level. */
+} hues_theme;
 
 /**
- * @struct fc_msg_t
+ * @struct hues_message
  * @brief Represents a log message with level, text, and location.
  */
 typedef struct {
-    fc_lvl_t lvl;  /**< Log level. */
-    const char* txt;  /**< Log message. */
-    fc_code_loc_t loc;  /**< Code location of the log message. */
-} fc_msg_t;
+    hues_level level;  /**< Log level. */
+    const char* contents;  /**< Log message. */
+    hues_code_location location;  /**< Code location of the log message. */
+} hues_message;
 
 /**
- * @typedef size_t (*fc_fm_func_t)(char* buff, size_t buffsz, char spec, va_list args)
+ * @typedef size_t (*hues_format_function)(char* buff, size_t buffsz, char specifier, va_list args)
  * @brief Represents a function that formats a log message.
  */
-typedef size_t (*fc_fm_func_t)(char* buff, size_t buffsz, char spec, va_list args);
+typedef size_t (*hues_format_function)(char* buff, size_t buffsz, char specifier, va_list args);
 
 /**
- * @struct fc_fmt_t
+ * @struct hues_format
  * @brief Represents a log message format.
  */
 typedef struct {
-    char* spec;  /**< Format specifier. */
-    fc_fm_func_t fmt_func;  /**< Function to format the log message. */
-} fc_fmt_t;
+    char* specifier;  /**< Format specifier. */
+    hues_format_function format_function;  /**< Function to format the log message. */
+} hues_format;
 
 /**
- * @struct fc_conf_t
+ * @struct hues_configuration
  * @brief Represents a logging configuration.
  */
 typedef struct {
-    fc_lvl_enum_t min_lvl;  /**< Minimum log level. */
-    char* lvl_fmt;  /**< Level format string. */
-    fc_fmt_t** fmts;  /**< Log message formats. */
-    char pref;  /**< Prefix character. */
-    fc_thm_t* thm;  /**< Logging theme. */
-    size_t lvls;  /**< Number of log levels. */
-} fc_conf_t;
+    hues_level_enum minimum_level;  /**< Minimum log level. */
+    char* header_format;  /**< Level format string. */
+    hues_format** formats;  /**< Log message formats. */
+    char prefix;  /**< Prefix character. */
+    hues_theme* theme;  /**< Logging theme. */
+    size_t levels_count;  /**< Number of log levels. */
+} hues_configuration;
 
 /**
- * @fn fc_lvl_enum_t fc_conf_get_minimum_lvl()
+ * @fn hues_level_enum hues_configuration_get_minimum_level()
  * @brief Retrieves the minimum log level from the logging configuration.
  * @return The minimum log level.
  */
-fc_lvl_enum_t fc_conf_get_minimum_lvl();
+hues_level_enum hues_configuration_get_minimum_level();
 
 /**
- * @fn void conf_set_minimum_lvl(fc_lvl_enum_t min_lvl)
+ * @fn void hues_configuration_set_minimum_level(hues_level_enum minimum_level)
  * @brief Sets the minimum log level in the logging configuration.
- * @param min_lvl The new minimum log level.
+ * @param minimum_level The new minimum log level.
  */
-void conf_set_minimum_lvl(fc_lvl_enum_t min_lvl);
+void hues_configuration_set_minimum_level(hues_level_enum minimum_level);
 
 /**
- * @fn char* fc_conf_get_lvl_fmt()
+ * @fn char* hues_conf_get_level_format()
  * @brief Retrieves the current level format string from the logging configuration.
  * @return A pointer to the level format string.
  */
-char* fc_conf_get_lvl_fmt();
+char* hues_configuration_get_level_format();
 
 /**
- * @fn void fc_conf_set_lvl_fmt(const char* lvl_fmt)
- * @brief Sets the level format string in the logging configuration.
- * @param lvl_fmt The new level format string.
+ * @fn void hues_configuration_set_level_format(const char* header_format)
+ * @brief Sets the level format string in the logging configurationiguration.
+ * @param header_format The new level format string.
  */
-void fc_conf_set_lvl_fmt(const char* lvl_fmt);
+void hues_configuration_set_level_format(const char* header_format);
 
 /**
- * @fn fc_fmt_t** fc_conf_get_fmts()
- * @brief Retrieves the log message formats from the logging configuration.
+ * @fn hues_format** hues_configuration_get_formats()
+ * @brief Retrieves the log message formats from the logging configurationiguration.
  * @return A pointer to the array of log message formats.
  */
-fc_fmt_t** fc_conf_get_fmts();
+hues_format** hues_configuration_get_formats();
 
 /**
- * @fn void fc_conf_set_fmts(fc_fmt_t** fmts)
- * @brief Sets the log message formats in the logging configuration.
- * @param fmts A pointer to the array of new log message formats.
+ * @fn void hues_configuration_set_formats(hues_format** formats)
+ * @brief Sets the log message formats in the logging configurationiguration.
+ * @param formats A pointer to the array of new log message formats.
  */
-void fc_conf_set_fmts(fc_fmt_t** fmts);
+void hues_configuration_set_formats(hues_format** formats);
 
 /**
- * @fn char fc_conf_get_prefix()
- * @brief Retrieves the prefix character from the logging configuration.
+ * @fn char hues_configuration_get_prefix()
+ * @brief Retrieves the prefix character from the logging configurationiguration.
  * @return The prefix character.
  */
-char fc_conf_get_prefix();
+char hues_configuration_get_prefix();
 
 /**
- * @fn void fc_conf_set_prefix(char pref)
- * @brief Sets the prefix character in the logging configuration.
- * @param pref The new prefix character.
+ * @fn void hues_configuration_set_prefix(char prefix)
+ * @brief Sets the prefix character in the logging configurationiguration.
+ * @param prefix The new prefix character.
  */
-void fc_conf_set_prefix(char pref);
+void hues_configuration_set_prefix(char prefix);
 
 /**
- * @fn fc_thm_t* fc_conf_get_thm()
- * @brief Retrieves the logging theme from the logging configuration.
+ * @fn hues_theme* hues_configuration_get_theme()
+ * @brief Retrieves the logging theme from the logging configurationiguration.
  * @return A pointer to the logging theme.
  */
-fc_thm_t* fc_conf_get_thm();
+hues_theme* hues_configuration_get_theme();
 
 /**
- * @fn void fc_conf_set_thm(fc_thm_t* thm)
- * @brief Sets the logging theme in the logging configuration.
- * @param thm A pointer to the new logging theme.
+ * @fn void hues_configuration_set_theme(hues_theme* theme)
+ * @brief Sets the logging theme in the logging configurationiguration.
+ * @param theme A pointer to the new logging theme.
  */
-void fc_conf_set_thm(fc_thm_t* thm);
+void hues_configuration_set_theme(hues_theme* theme);
 
 /**
- * @fn void fc_conf_add_fmt(fc_fmt_t* fmt)
- * @brief Adds a log message format to the logging configuration.
- * @param fmt A pointer to the new log message format.
+ * @fn void hues_configuration_add_format(hues_format* format)
+ * @brief Adds a log message format to the logging configurationiguration.
+ * @param format A pointer to the new log message format.
  */
-void fc_conf_add_fmt(fc_fmt_t* fmt);
+void hues_configuration_add_format(hues_format* format);
 
 /**
- * @fn extern void fc_thm_from_hex(uint32_t* bg_hex, uint32_t* fg_hex)
+ * @fn extern void hues_theme_from_hex(uint32_t* bg_hex, uint32_t* fg_hex)
  * @brief Converts hexadecimal color values to an RGB theme.
  * @param bg_hex A pointer to the background color's hexadecimal value.
  * @param fg_hex A pointer to the foreground color's hexadecimal value.
  */
-extern void fc_thm_from_hex(uint32_t* bg_hex, uint32_t* fg_hex);
+extern void hues_theme_from_hex(uint32_t* bg_hex, uint32_t* fg_hex);
 
 /**
- * @fn extern size_t fc_fmt(char* buff, size_t buffsz, const char* fmt, ...)
+ * @fn extern size_t hues_format(char* buff, size_t buffsz, const char* format, ...)
  * @brief Formats a log message.
  * @param buff A buffer to store the formatted log message.
  * @param buffsz The size of the buffer.
- * @param fmt The format string for the log message.
+ * @param format The format string for the log message.
  * @param ... Additional arguments used with the format string.
  * @return The number of characters in the formatted log message.
  */
-extern size_t fc_fmt(char* buff, size_t buffsz, const char* fmt, ...);
+extern size_t hues_format_c(char* buff, size_t buffsz, const char* format, ...);
 
 /**
- * @fn extern size_t fc_fmt_p(char* buff, size_t buffsz, const char* fmt, ...)
+ * @fn extern size_t hues_format_p(char* buff, size_t buffsz, const char* format, ...)
  * @brief Formats a log message with a pointer argument.
  * @param buff A buffer to store the formatted log message.
  * @param buffsz The size of the buffer.
- * @param fmt The format string for the log message.
+ * @param format The format string for the log message.
  * @param ... Additional arguments used with the format string.
  * @return The number of characters in the formatted log message.
  */
-extern size_t fc_fmt_p(char* buff, size_t buffsz, const char* fmt, ...);
+extern size_t hues_format_p(char* buff, size_t buffsz, const char* format, ...);
 
 /**
- * @fn extern void fc_log(fc_msg_t* txt, ...)
+ * @fn extern void hues_log(hues_message* contents, ...)
  * @brief Logs a message.
- * @param txt A pointer to the log message.
+ * @param contents A pointer to the log message.
  * @param ... Additional arguments used with the log message.
  */
-extern void fc_log(fc_msg_t* txt, ...);
+extern void hues_log(hues_message* contents, ...);
 
 /**
- * @fn extern void fc_init()
+ * @fn extern void hues_initialize()
  * @brief Initializes the logging system.
  */
-extern void fc_init();
+extern void hues_initialize();
 
 /**
  * @def BUFFER_SIZE 4096
@@ -257,78 +257,78 @@ extern void fc_init();
 #define BUFFER_SIZE 4096
 
 /**
- * @def CODE_LOC (fc_code_loc_t) { __FILE__, __func__, __LINE__ }
+ * @def CODE_LOC (hues_code_location) { __FILE__, __func__, __LINE__ }
  * @brief Macro to generate a code location.
  */
-#define CODE_LOC (fc_code_loc_t) { __FILE__, __func__, __LINE__ }
+#define CODE_LOC (hues_code_location) { __FILE__, __func__, __LINE__ }
 
 #define ESC_SEQ_BG "\x1b[48;2;%d;%d;%dm"
 #define ESC_SEQ_FG "\x1b[38;2;%d;%d;%dm"
 #define ESC_SEQ_RST "\x1b[0m"
 
-#define TRACE (fc_lvl_t) { .lvl = FC_LVL_TRC, .name = "TRACE" }
-#define DEBUG (fc_lvl_t) { .lvl = FC_LVL_DBG, .name = "DEBUG" }
-#define INFO (fc_lvl_t) { .lvl = FC_LVL_INF, .name = "INFO" }
-#define WARN (fc_lvl_t) { .lvl = FC_LVL_WRN, .name = "WARN" }
-#define SEVERE (fc_lvl_t) { .lvl = FC_LVL_SVR, .name = "SEVERE" }
-#define CRITICAL (fc_lvl_t) { .lvl = FC_LVL_CRT, .name = "CRITICAL" }
-#define UNKNOWN (fc_lvl_t) { .lvl = FC_LVL_UNK, .name = "???" }
+#define TRACE (hues_level) { .level = HUES_LEVEL_TRACE, .name = "TRACE" }
+#define DEBUG (hues_level) { .level = HUES_LEVEL_DEBUG, .name = "DEBUG" }
+#define INFO (hues_level) { .level = HUES_LEVEL_INFO, .name = "INFO" }
+#define WARN (hues_level) { .level = HUES_LEVEL_WARN, .name = "WARN" }
+#define SEVERE (hues_level) { .level = HUES_LEVEL_SEVERE, .name = "SEVERE" }
+#define CRITICAL (hues_level) { .level = HUES_LEVEL_CRITICAL, .name = "CRITICAL" }
+#define UNKNOWN (hues_level) { .level = HUES_LEVEL_UNKNOWN, .name = "???" }
 
 /**
- * @def trace(msg_fmt, ...)
+ * @def trace(message_format, ...)
  * @brief Logs a message at the TRACE level.
- * @param msg_fmt Format string for the log message.
+ * @param message_format Format string for the log message.
  * @param ... Additional arguments used with the format string.
  */
-#define trace(msg_fmt, ...) fc_log(&(fc_msg_t) { TRACE, .txt = msg_fmt, .loc = CODE_LOC }, TRACE, CODE_LOC, ##__VA_ARGS__)
+#define trace(message_format, ...) hues_log(&(hues_message) { TRACE, .contents = message_format, .location = CODE_LOC }, TRACE, CODE_LOC, ##__VA_ARGS__)
 
 /**
- * @def debug(msg_fmt, ...)
+ * @def debug(message_format, ...)
  * @brief Logs a message at the DEBUG level.
- * @param msg_fmt Format string for the log message.
+ * @param message_format Format string for the log message.
  * @param ... Additional arguments used with the format string.
  */
-#define debug(msg_fmt, ...) fc_log(&(fc_msg_t) { DEBUG, .txt = msg_fmt, .loc = CODE_LOC }, DEBUG, CODE_LOC, ##__VA_ARGS__)
+#define debug(message_format, ...) hues_log(&(hues_message) { DEBUG, .contents = message_format, .location = CODE_LOC }, DEBUG, CODE_LOC, ##__VA_ARGS__)
 
 /**
- * @def info(msg_fmt, ...)
+ * @def info(message_format, ...)
  * @brief Logs a message at the INFO level.
- * @param msg_fmt Format string for the log message.
+ * @param message_format Format string for the log message.
  * @param ... Additional arguments used with the format string.
  */
-#define info(msg_fmt, ...) fc_log(&(fc_msg_t) { INFO, .txt = msg_fmt, .loc = CODE_LOC }, INFO, CODE_LOC, ##__VA_ARGS__)
+#define info(message_format, ...) hues_log(&(hues_message) { INFO, .contents = message_format, .location = CODE_LOC }, INFO, CODE_LOC, ##__VA_ARGS__)
 
 /**
- * @def warn(msg_fmt, ...)
+ * @def warn(message_format, ...)
  * @brief Logs a message at the WARN level.
- * @param msg_fmt Format string for the log message.
+ * @param message_format Format string for the log message.
  * @param ... Additional arguments used with the format string.
  */
-#define warn(msg_fmt, ...) fc_log(&(fc_msg_t) { WARN, .txt = msg_fmt, .loc = CODE_LOC }, WARN, CODE_LOC, ##__VA_ARGS__)
+#define warn(message_format, ...) hues_log(&(hues_message) { WARN, .contents = message_format, .location = CODE_LOC }, WARN, CODE_LOC, ##__VA_ARGS__)
 
 /**
- * @def severe(msg_fmt, ...)
+ * @def severe(message_format, ...)
  * @brief Logs a message at the SEVERE level.
- * @param msg_fmt Format string for the log message.
+ * @param message_format Format string for the log message.
  * @param ... Additional arguments used with the format string.
  */
-#define severe(msg_fmt, ...) fc_log(&(fc_msg_t) { SEVERE, .txt = msg_fmt, .loc = CODE_LOC }, SEVERE, CODE_LOC, ##__VA_ARGS__)
+#define severe(message_format, ...) hues_log(&(hues_message) { SEVERE, .contents = message_format, .location = CODE_LOC }, SEVERE, CODE_LOC, ##__VA_ARGS__)
 
 /**
- * @def critical(msg_fmt, ...)
+ * @def critical(message_format, ...)
  * @brief Logs a message at the CRITICAL level.
- * @param msg_fmt Format string for the log message.
+ * @param message_format Format string for the log message.
  * @param ... Additional arguments used with the format string.
  */
-#define critical(msg_fmt, ...) fc_log(&(fc_msg_t) { CRITICAL, .txt = msg_fmt, .loc = CODE_LOC }, CRITICAL, CODE_LOC, ##__VA_ARGS__)
+#define critical(message_format, ...) hues_log(&(hues_message) { CRITICAL, .contents = message_format, .location = CODE_LOC }, CRITICAL, CODE_LOC, ##__VA_ARGS__)
 
 // Define the macro for hooking funcs with no args and no return value
 #define HOOK_FUNCTION_0_ARG_VOID(funcname)                           \
     typedef void (*funcname##_type)();                               \
     funcname##_type original_##funcname = (funcname##_type)funcname; \
-    void hooked_##funcname(fc_code_loc_t loc)                      \
+    void hooked_##funcname(hues_code_location location)                      \
     {                                                                \
-        trace("'" #funcname "' called at #c\n", loc);         \
+        trace("'" #funcname "' called at #c\n", location);         \
         /* Additional hook logic here */                             \
         original_##funcname();                                       \
     }                                                                \
@@ -340,9 +340,9 @@ extern void fc_init();
 #define HOOK_FUNCTION_0_ARG(funcname, ret_type)                      \
     typedef ret_type (*funcname##_type)();                           \
     funcname##_type original_##funcname = (funcname##_type)funcname; \
-    ret_type hooked_##funcname(fc_code_loc_t loc)                  \
+    ret_type hooked_##funcname(hues_code_location location)                  \
     {                                                                \
-        trace("'" #funcname "' called at #c\n", loc);         \
+        trace("'" #funcname "' called at #c\n", location);         \
         /* Additional hook logic here */                             \
         return original_##funcname();                                \
     }                                                                \
@@ -355,9 +355,9 @@ extern void fc_init();
 #define HOOK_FUNCTION_1_ARG_VOID(funcname, arg_type)                 \
     typedef void (*funcname##_type)(arg_type);                       \
     funcname##_type original_##funcname = (funcname##_type)funcname; \
-    void hooked_##funcname(arg_type arg, fc_code_loc_t loc)        \
+    void hooked_##funcname(arg_type arg, hues_code_location location)        \
     {                                                                \
-        trace("'" #funcname "' called at #c\n", loc);         \
+        trace("'" #funcname "' called at #c\n", location);         \
         /* Additional hook logic here */                             \
         original_##funcname(arg);                                    \
     }                                                                \
@@ -369,9 +369,9 @@ extern void fc_init();
 #define HOOK_FUNCTION_1_ARG(funcname, ret_type, arg_type)            \
     typedef ret_type (*funcname##_type)(arg_type);                   \
     funcname##_type original_##funcname = (funcname##_type)funcname; \
-    inline ret_type hooked_##funcname(arg_type arg, fc_code_loc_t loc)    \
+    inline ret_type hooked_##funcname(arg_type arg, hues_code_location location)    \
     {                                                                \
-        trace("'" #funcname "' called at #c\n", loc);              \
+        trace("'" #funcname "' called at #c\n", location);              \
         /* Additional hook logic here */                             \
         return original_##funcname(arg);                             \
     }                                                                \
@@ -384,9 +384,9 @@ extern void fc_init();
 #define HOOK_FUNCTION_2_ARG_VOID(funcname, arg_type1, arg_type2)                \
     typedef void (*funcname##_type)(arg_type1, arg_type2);                      \
     funcname##_type original_##funcname = (funcname##_type)funcname;            \
-    void hooked_##funcname(arg_type1 arg1, arg_type2 arg2, fc_code_loc_t loc) \
+    void hooked_##funcname(arg_type1 arg1, arg_type2 arg2, hues_code_location location) \
     {                                                                           \
-        trace("'" #funcname "' called at #c\n", loc);                    \
+        trace("'" #funcname "' called at #c\n", location);                    \
         /* Additional hook logic here */                                        \
         original_##funcname(arg1, arg2);                                        \
     }                                                                           \
@@ -398,9 +398,9 @@ extern void fc_init();
 #define HOOK_FUNCTION_2_ARG(funcname, ret_type, arg_type1, arg_type2)               \
     typedef ret_type (*funcname##_type)(arg_type1, arg_type2);                      \
     funcname##_type original_##funcname = (funcname##_type)funcname;                \
-    ret_type hooked_##funcname(arg_type1 arg1, arg_type2 arg2, fc_code_loc_t loc) \
+    ret_type hooked_##funcname(arg_type1 arg1, arg_type2 arg2, hues_code_location location) \
     {                                                                               \
-        trace("'" #funcname "' called at #c\n", loc);                        \
+        trace("'" #funcname "' called at #c\n", location);                        \
         /* Additional hook logic here */                                            \
         return original_##funcname(arg1, arg2);                                     \
     }                                                                               \
@@ -413,9 +413,9 @@ extern void fc_init();
 #define HOOK_FUNCTION_3_ARG_VOID(funcname, arg_type1, arg_type2, arg_type3)                     \
     typedef void (*funcname##_type)(arg_type1, arg_type2, arg_type3);                           \
     funcname##_type original_##funcname = (funcname##_type)funcname;                            \
-    void hooked_##funcname(arg_type1 arg1, arg_type2 arg2, arg_type3 arg3, fc_code_loc_t loc) \
+    void hooked_##funcname(arg_type1 arg1, arg_type2 arg2, arg_type3 arg3, hues_code_location location) \
     {                                                                                           \
-        trace("'" #funcname "' called at #c\n", loc);                                    \
+        trace("'" #funcname "' called at #c\n", location);                                    \
         /* Additional hook logic here */                                                        \
         original_##funcname(arg1, arg2, arg3);                                                  \
     }                                                                                           \
@@ -427,9 +427,9 @@ extern void fc_init();
 #define HOOK_FUNCTION_3_ARG(funcname, ret_type, arg_type1, arg_type2, arg_type3)                    \
     typedef ret_type (*funcname##_type)(arg_type1, arg_type2, arg_type3);                           \
     funcname##_type original_##funcname = (funcname##_type)funcname;                                \
-    ret_type hooked_##funcname(arg_type1 arg1, arg_type2 arg2, arg_type3 arg3, fc_code_loc_t loc) \
+    ret_type hooked_##funcname(arg_type1 arg1, arg_type2 arg2, arg_type3 arg3, hues_code_location location) \
     {                                                                                               \
-        trace("'" #funcname "' called at #c\n", loc);                                        \
+        trace("'" #funcname "' called at #c\n", location);                                        \
         /* Additional hook logic here */                                                            \
         return original_##funcname(arg1, arg2, arg3);                                               \
     }                                                                                               \
@@ -442,9 +442,9 @@ extern void fc_init();
 #define HOOK_FUNCTION_4_ARG_VOID(funcname, arg_type1, arg_type2, arg_type3, arg_type4)                          \
     typedef void (*funcname##_type)(arg_type1, arg_type2, arg_type3, arg_type4);                                \
     funcname##_type original_##funcname = (funcname##_type)funcname;                                            \
-    void hooked_##funcname(arg_type1 arg1, arg_type2 arg2, arg_type3 arg3, arg_type4 arg4, fc_code_loc_t loc) \
+    void hooked_##funcname(arg_type1 arg1, arg_type2 arg2, arg_type3 arg3, arg_type4 arg4, hues_code_location location) \
     {                                                                                                           \
-        trace("'" #funcname "' called at #c\n", loc);                                                    \
+        trace("'" #funcname "' called at #c\n", location);                                                    \
         /* Additional hook logic here */                                                                        \
         original_##funcname(arg1, arg2, arg3, arg4);                                                            \
     }                                                                                                           \
@@ -456,9 +456,9 @@ extern void fc_init();
 #define HOOK_FUNCTION_4_ARG(funcname, ret_type, arg_type1, arg_type2, arg_type3, arg_type4)                         \
     typedef ret_type (*funcname##_type)(arg_type1, arg_type2, arg_type3, arg_type4);                                \
     funcname##_type original_##funcname = (funcname##_type)funcname;                                                \
-    ret_type hooked_##funcname(arg_type1 arg1, arg_type2 arg2, arg_type3 arg3, arg_type4 arg4, fc_code_loc_t loc) \
+    ret_type hooked_##funcname(arg_type1 arg1, arg_type2 arg2, arg_type3 arg3, arg_type4 arg4, hues_code_location location) \
     {                                                                                                               \
-        trace("'" #funcname "' called at #c\n", loc);                                                        \
+        trace("'" #funcname "' called at #c\n", location);                                                        \
         /* Additional hook logic here */                                                                            \
         return original_##funcname(arg1, arg2, arg3, arg4);                                                         \
     }                                                                                                               \
@@ -471,9 +471,9 @@ extern void fc_init();
 #define HOOK_FUNCTION_5_ARG_VOID(funcname, arg_type1, arg_type2, arg_type3, arg_type4, arg_type5)                               \
     typedef void (*funcname##_type)(arg_type1, arg_type2, arg_type3, arg_type4, arg_type5);                                     \
     funcname##_type original_##funcname = (funcname##_type)funcname;                                                            \
-    void hooked_##funcname(arg_type1 arg1, arg_type2 arg2, arg_type3 arg3, arg_type4 arg4, arg_type5 arg5, fc_code_loc_t loc) \
+    void hooked_##funcname(arg_type1 arg1, arg_type2 arg2, arg_type3 arg3, arg_type4 arg4, arg_type5 arg5, hues_code_location location) \
     {                                                                                                                           \
-        trace("'" #funcname "' called at #c\n", loc);                                                                    \
+        trace("'" #funcname "' called at #c\n", location);                                                                    \
         /* Additional hook logic here */                                                                                        \
         original_##funcname(arg1, arg2, arg3, arg4, arg5);                                                                      \
     }                                                                                                                           \
@@ -485,9 +485,9 @@ extern void fc_init();
 #define HOOK_FUNCTION_5_ARG(funcname, ret_type, arg_type1, arg_type2, arg_type3, arg_type4, arg_type5)                              \
     typedef ret_type (*funcname##_type)(arg_type1, arg_type2, arg_type3, arg_type4, arg_type5);                                     \
     funcname##_type original_##funcname = (funcname##_type)funcname;                                                                \
-    ret_type hooked_##funcname(arg_type1 arg1, arg_type2 arg2, arg_type3 arg3, arg_type4 arg4, arg_type5 arg5, fc_code_loc_t loc) \
+    ret_type hooked_##funcname(arg_type1 arg1, arg_type2 arg2, arg_type3 arg3, arg_type4 arg4, arg_type5 arg5, hues_code_location location) \
     {                                                                                                                               \
-        trace("'" #funcname "' called at #c\n", loc);                                                                        \
+        trace("'" #funcname "' called at #c\n", location);                                                                        \
         /* Additional hook logic here */                                                                                            \
         return original_##funcname(arg1, arg2, arg3, arg4, arg5);                                                                   \
     }                                                                                                                               \

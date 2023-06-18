@@ -1,1 +1,1 @@
-gcc -Wall -o libfc.o -g -c flexclog.c
+gcc -Wall -o hues.o -g -c hues.c

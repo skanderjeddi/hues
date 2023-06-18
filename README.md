@@ -1,9 +1,9 @@
-# FlexCLog
+# hues
 ![version](https://img.shields.io/badge/version-0.1.0-green)
 ![C](https://img.shields.io/badge/language-C-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-FlexCLog is a highly flexible, fully customizable logging library for the C language. It was designed to provide a straightforward, easy-to-use interface for developers who want a customizable way to handle their logging. With FlexCLog, you can configure different logging levels, output formats, and more.
+*hues* is a highly flexible, fully customizable logging library for the C language. It was designed to provide a straightforward, easy-to-use interface for developers who want a customizable way to handle their logging. With hues, you can configure different logging levels, output formats, and more.
 
 ## Table of Contents
 - [Features](#features)
@@ -24,21 +24,26 @@ FlexCLog is a highly flexible, fully customizable logging library for the C lang
 
 1. Clone this repository
 ```bash
-git clone https://github.com/skanderjeddi/flexclog.git
+git clone https://github.com/skanderjeddi/hues.git
 ```
 2. Navigate into the cloned directory and compile the library
 ```bash
-cd flexclog
-build.sh
+cd hues
+make
+```
+
+3. Install the library
+```bash
+sudo make install
 ```
 
 ## Usage
 ```c
-#include <flexclog.h>
+#include <hues.h>
 
 int main() {
     // Initialize the logger
-    fc_init();
+    hues_initialize();
 
     // Use the logger
     trace("This is an error message");
@@ -51,27 +56,27 @@ int main() {
 ```
 
 ## Customization
-FlexCLog allows you to customize its behavior to suit your needs. Here are a few examples of what you can customize:
+*hues* allows you to customize its behavior to suit your needs. Here are a few examples of what you can customize:
 
 1. **Changing the log level:**
 ```c
-fc_set_min_lvl(FC_LVL_INFO);
+hues_configuration_set_minimum_level(HUES_LEVEL_INFO);
 ```
 
 2. **Changing the output format:**
 ```c
-fc_set_lvl_fmt("...");
+**TODO**
 ```
 
 3. **Changing the output destination:**
 **COMING SOON!**
 
 ## Contributing
-We appreciate any contribution to FlexCLog. Please review the [CONTRIBUTING.md](CONTRIBUTING.md) for more details on how to contribute to this project.
+We appreciate any contribution to hues. Please review the [CONTRIBUTING.md](CONTRIBUTING.md) for more details on how to contribute to this project.
 
 ## License
-FlexCLog is licensed under the terms of the MIT License. See [LICENSE](LICENSE) for more details.
+hues is licensed under the terms of the MIT License. See [LICENSE](LICENSE) for more details.
 
 ---
 
-**Thank you for using FlexCLog!**
+**Thank you for using hues!**
